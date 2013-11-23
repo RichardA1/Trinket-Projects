@@ -6,16 +6,20 @@
 
 #define PIN 0
 #define BUTTON 1
+#define PHOTOCELL 1    // CdS photocell on GPIO #2 (A1)
 #define Pixels 24
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(Pixels, PIN, NEO_GRB + NEO_KHZ800);
 
 int MODE = 1; // Current display mode.
+
+// ############### For Fire Flicker Mode.
 int alpha; // Current value of the pixels.
 int dir = 1; // Direction of the pixels... 1 = getting brighter, 0 = getting dimmer
 int flip; // Randomly flip the direction every once in a while
 int minAlpha = 35; // Min value of brightness
 int maxAlpha = 200; // Max value of brightness
 int alphaDelta = 5; // Delta of brightness between times through the loop
+// ############### End Fire Flicker Mode.
 
 void setup() {
   strip.begin();
@@ -24,10 +28,10 @@ void setup() {
 
 void loop() {
   if(digitalRead(BUTTON) == HIGH) {
-    delay(500);
+    delay(300);
     MODE += 1;
   }
-  if(MODE > 4) {
+  if(MODE > 5) {
     MODE = 1;
   }
   
@@ -37,18 +41,26 @@ void loop() {
 
 switch (MODE) {
     case 1:
-      // ############### Solid White
-      colorWipe(strip.Color(200, 200, 200)); // White
+      // ############### Flash Activated - Solid White
+      if (analogRead(PHOTOCELL) > 800) {
+        colorWipe(strip.Color(250, 250, 250)); // White
+        delay(100);
+      }
+      colorWipe(strip.Color(0, 0, 0)); // off
       break;
     case 2:
-      // ############### Solid Orange
-      colorWipe(strip.Color(200, 100, 0)); // Orange
+      // ############### Solid White
+        colorWipe(strip.Color(200, 200, 200)); // White
       break;
     case 3:
+      // ############### Solid Orange
+      colorWipe(strip.Color(0, 100, 200)); // Orange
+      break;
+    case 4:
       // ############### Solid Purple
       colorWipe(strip.Color(100, 0, 200)); // Purple
       break;
-    case 4:
+    case 5:
       // ############### Fire light flicker.
     flip = random(32);
   if(flip > 20) {
