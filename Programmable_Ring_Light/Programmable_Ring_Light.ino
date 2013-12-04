@@ -7,6 +7,7 @@
 #define PIN 0
 #define BUTTON 1
 #define PHOTOCELL 1    // CdS photocell on GPIO #2 (A1)
+#define POT_PIN 3  // 10K potentiometer on GPIO #3 (A3)
 #define Pixels 24
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(Pixels, PIN, NEO_GRB + NEO_KHZ800);
 
